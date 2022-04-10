@@ -7,7 +7,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-state_dir=$(repro.module_dot_dir jupyter-runtime)
+state_dir=$(repro.module_dot_dir jupyter-service)
 cd ${state_dir}
 
 # provide instructions to user
