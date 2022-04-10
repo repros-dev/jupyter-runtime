@@ -1,3 +1,5 @@
-REPRO_NAME=repro-template
+REPRO_NAME=jupyter-runtime
 REPRO_DOCKER_ORG=cirss
 REPRO_IMAGE_TAG=latest
+
+PARENT_IMAGE=cirss/jupyter-runtime-parent:latest
