@@ -8,7 +8,6 @@ cleanup() {
 trap cleanup EXIT
 
 state_dir=$(repro.module_dot_dir jupyter-service)
-cd ${state_dir}
 
 # provide instructions to user
 echo
@@ -24,4 +23,4 @@ echo "--------------------------------------------------------------------------
 # run Jupyter Notebook service
 jupyter notebook --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
     --notebook-dir=${REPRO_MNT}                                   \
-    &> log.txt
+    &>> ${state_dir}/log.txt

@@ -1,4 +1,4 @@
 
 run:
-	bash run_jupyter_notebook
+	bash jupyter-service.start
 

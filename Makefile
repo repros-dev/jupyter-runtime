@@ -14,7 +14,7 @@ REPRO_IMAGE=${REPRO_DOCKER_ORG}/${REPRO_NAME}:${REPRO_IMAGE_TAG}
 # provide runtime options for Docker when running this REPRO
 REPRO_DOCKER_OPTIONS=
 #REPRO_DOCKER_OPTIONS=-p 9999:9999
-REPRO_DOCKER_OPTIONS=-p 8888:8888 --pid=host 
+REPRO_DOCKER_OPTIONS=-p 8888:8888 #--pid=host 
 
 #REPRO_MOUNT_CLI=--volume $(CURDIR)/../go-cli:/mnt/go-cli
 #REPRO_MOUNT_BLAZE=--volume $(CURDIR)/../blaze:/mnt/blaze

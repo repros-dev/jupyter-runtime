@@ -1,4 +1,4 @@
 setup-base
-run_jupyter_notebook
+jupyter-service.start
 Makefile-base
 targets-base
