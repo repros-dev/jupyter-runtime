@@ -1,4 +1,4 @@
 
-run:
+start:
 	bash jupyter-service.start
 

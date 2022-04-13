@@ -1,26 +1,10 @@
 #!/bin/bash
 
-# avoid error message on ctrl-c
-cleanup() {
-    echo
-    exit 0
-}
-trap cleanup EXIT
-
 state_dir=$(repro.module_dot_dir jupyter-service)
 
-# provide instructions to user
-echo
-echo "--------------------------------------------------------------------------"
-echo "The Jupyter Notebook service has been started in the REPRO."
-echo "Terminal output from the service is directed to service/log.txt."
-echo
-echo "Connect to Jupyter from your browser at http://127.0.0.1:8888/."
-echo
-echo "Terminate the service by typing CTRL-C TWICE in this terminal."
-echo "--------------------------------------------------------------------------"
-
-# run Jupyter Notebook service
 jupyter notebook --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
     --notebook-dir=${REPRO_MNT}                                   \
-    &>> ${state_dir}/log.txt
+    &>> ${state_dir}/log.txt &
+
+echo
+echo "Connect to Jupyter from your browser at http://127.0.0.1:8888/."

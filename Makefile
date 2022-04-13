@@ -28,7 +28,6 @@ REPRO_MNT=/mnt/${REPRO_NAME}
 # identify important REPRO subdirectories
 #REPRO_CODE_DIR=src
 REPRO_EXAMPLES_DIR=examples
-REPRO_SERVICE_DIR=service
 
 # define command for running the service provided by this REPRO
 REPRO_SERVICE_COMMAND=${REPRO_SERVICE_DIR}/run.sh
@@ -117,7 +116,7 @@ purge-database:       ## Delete all artifacts associated with the database insta
 ifndef IN_RUNNING_REPRO
 
 start-service:          ## Run the service provided by this REPRO locally
-	$(RUN_IN_REPRO) 'repro.run_target start-service'
+	$(RUN_IN_REPRO) 'repro.run_target start-service && repro.wait_for_interrupt'
 	
 else
 
