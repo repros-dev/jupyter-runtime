@@ -1,8 +1,10 @@
 #!/bin/bash
 
+jupyter_mode=${1:-lab}
+
 state_dir=$(repro.module_dot_dir jupyter-service)
 
-jupyter notebook --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
+jupyter ${jupyter_mode} --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
     --notebook-dir=${REPRO_MNT}                                   \
     &>> ${state_dir}/log.txt &
 
