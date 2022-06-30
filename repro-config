@@ -1,0 +1,12 @@
+REPRO_NAME=jupyter-service
+REPRO_DOCKER_ORG=cirss
+REPRO_IMAGE_TAG=latest
+
+PARENT_IMAGE=cirss/jupyter-service-parent:latest
+
+REPRO_DOCKER_OPTIONS=-p 8888:8888
+
+image:                  build-image   ## 
+start:                  start-repro   ## 
+
+## 
