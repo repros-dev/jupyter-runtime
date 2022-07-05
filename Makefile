@@ -142,12 +142,22 @@ endif
 ## 
 #- ---------- Targets for starting this REPRO  ---------------------------------
 #- 
+ifndef IN_RUNNING_REPRO
 start-repro:            ## Start this REPRO in interactive mode. 
 	$(REPRO_RUN_COMMAND)
+else
+start-repro:
+	$(warning INFO: The REPRO is already running.)
+endif
 
 ## 
+ifdef IN_RUNNING_REPRO
 start-services:         ## Start the services provided by this REPRO.
-	$(RUN_IN_REPRO) 'repro.run_target start-services'
+	$(RUN_IN_REPRO) 'repro.start_services'
+else
+start-services:
+	$(RUN_IN_REPRO) 'repro.start_services --wait-for-key'
+endif
 
 ## 
 #- ---------- Targets for running the examples in this REPRO --------------------

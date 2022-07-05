@@ -1,5 +1,4 @@
 setup-base
 jupyter-service.start
-jupyter-service.wait-for-key
 Makefile-base
 targets-base

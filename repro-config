@@ -4,7 +4,8 @@ REPRO_IMAGE_TAG=latest
 
 PARENT_IMAGE=cirss/jupyter-service-parent:latest
 
-REPRO_DOCKER_OPTIONS=-p 8888:8888
+REPRO_DOCKER_OPTIONS=-p 8888:8888 -e REPRO_START_SERVICES_AT_STARTUP='true'
+
 
 image:                  build-image   ## 
 start:                  start-repro   ## 

@@ -1,4 +1,3 @@
 
 start:
 	bash jupyter-service.start
-	jupyter-service.wait-for-key
