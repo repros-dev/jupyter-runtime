@@ -2,3 +2,6 @@
 repro.require python-dev master ${REPROS_DEV}
 
 sudo pip install jupyterlab
+
+repro.service Jupyter 8888 8888
+

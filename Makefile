@@ -111,6 +111,9 @@ endif # ifdef PARENT_IMAGE
 
 endif # ifndef IN_RUNNING_REPRO
 
+ifneq ($(REPRO_VERBOSE_MAKEFILE), true)
+QUIET=@
+endif
 
 ## 
 #- =============================================================================
@@ -124,7 +127,7 @@ endif # ifndef IN_RUNNING_REPRO
 REPRO_MNT=/mnt/${REPRO_NAME}
 
 # define command for running the REPRO Docker image
-REPRO_RUN_COMMAND=docker run -it --rm $(REPRO_DOCKER_OPTIONS)               \
+REPRO_RUN_COMMAND=$(QUIET)docker run -it --rm $(REPRO_DOCKER_OPTIONS)       \
                              -e REPRO_NAME="${REPRO_NAME}"                  \
                              -e REPRO_MNT="${REPRO_MNT}"                    \
                              --volume "$(CURDIR)":"$(REPRO_MNT)"            \
@@ -133,7 +136,7 @@ REPRO_RUN_COMMAND=docker run -it --rm $(REPRO_DOCKER_OPTIONS)               \
 
 # define command for running a command in a running or currently-idle REPRO
 ifdef IN_RUNNING_REPRO
-RUN_IN_REPRO=bash -ic
+RUN_IN_REPRO=$(QUIET)bash -ic
 else
 RUN_IN_REPRO=$(REPRO_RUN_COMMAND) bash -ilc
 endif

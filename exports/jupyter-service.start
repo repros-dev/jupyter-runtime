@@ -8,5 +8,3 @@ jupyter ${jupyter_mode} --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
     --notebook-dir=${REPRO_MNT}                                   \
     &>> ${state_dir}/log.txt &
 
-echo
-echo "Connect to Jupyter from your browser at http://127.0.0.1:8888/."
