@@ -1,16 +1,72 @@
 # This is the top-level Makefile for this REPRO.
 # Type 'make' with no arguments to list the available targets.
 
-# invoke the `list` target run if no argument is provided to make
-default_target: list
-
-# include global REPRO configuration file if present 
--include repro-config
-
 # detect if running in a Windows environment
 ifeq ('$(OS)', 'Windows_NT')
 PWSH=powershell -noprofile -command
 endif
+
+# by default invoke the `list` target run if no argument is provided to make
+default_target: list
+
+# Include optional repro-config file to to override default REPRO settings.
+-include repro-config
+
+#- =============================================================================
+#-     --- REPRO settings, supported values, and defaults ---
+#- =============================================================================
+
+#- 
+#- --- REPRO_SERVICES ---------------------------------------------------------
+#- 
+#-    auto : Services start automatically when the REPRO starts (DEFAULT).
+#-  manual : Services start when the start-services target is invoked manually.
+#
+REPRO_SERVICES ?= auto
+
+#- 
+#- --- REPRO_VERBOSITY --------------------------------------------------------
+#- 
+#-  silent : The REPRO framework will make no output at all.
+#-   quiet : Only errors and essential messages will be shown (DEFAULT).
+#-    warn : Errors and warning messages will be shown.
+#-    info : Errors, warnings, and informational messages will be shown.
+#-   debug : All messages will be shown along with script and basic Makefile
+#-           execution information.
+#-   trace : All possible output including detailed Makefile target execution
+#-           information.
+#
+REPRO_VERBOSITY ?= quiet
+
+# Use working directory as name of REPRO if REPRO_NAME undefined.
+ifndef REPRO_NAME
+REPRO_NAME=$(shell basename $$(pwd))
+$(warning The REPRO_NAME variable is not set. Defaulting to \
+          working directory name '${REPRO_NAME}' for name of REPRO.)
+endif
+
+# Use name of user for Docker organization if REPRO_DOCKER_ORG undefined.
+ifndef REPRO_DOCKER_ORG
+REPRO_DOCKER_ORG=$(shell whoami)
+$(warning The REPRO_DOCKER_ORG variable is not set. Defaulting to \
+          user name '${REPRO_DOCKER_ORG}' for name of Docker organization.)
+endif
+
+# Use 'latest' as image tag if REPRO_IMAGE_TAG undefined
+ifndef REPRO_IMAGE_TAG
+REPRO_IMAGE_TAG=latest
+$(warning The REPRO_IMAGE_TAG variable is not set. Defaulting to \
+          '${REPRO_IMAGE_TAG}' for Docker image tag.)
+endif
+
+# Assemble REPRO settings available within the running REPRO.
+REPRO_SETTINGS=	-e REPRO_SERVICES="$(REPRO_SERVICES)"	\
+				-e REPRO_VERBOSITY="$(REPRO_VERBOSITY)"	\
+               	-e REPRO_NAME="${REPRO_NAME}"                  			\
+               	-e REPRO_MNT="${REPRO_MNT}"
+
+# Identify the Docker image associated with this REPRO
+REPRO_IMAGE=${REPRO_DOCKER_ORG}/${REPRO_NAME}:${REPRO_IMAGE_TAG}
 
 ## 
 #- =============================================================================
@@ -37,42 +93,13 @@ upgrade-makefile:       ## Replace local REPRO Makefile with latest version
                         ## of Makefile on repros-dev/repro master branch.
 	curl -L https://raw.githubusercontent.com/repros-dev/repro/master/Makefile -o Makefile
 
-# Configure REPRO image builds, loading settings from repro-build-config file
-# if present, and providing appropriate defaults for undefined settings. 
-
-# include REPRO image configuration file if present 
--include repro-image-config
-
-# use working directory as name of REPRO if REPRO_NAME undefined
-ifndef REPRO_NAME
-REPRO_NAME=$(shell basename $$(pwd))
-$(warning The REPRO_NAME variable is not set. Defaulting to \
-          working directory name '${REPRO_NAME}' for name of REPRO.)
-endif
-
-# use name of user for Docker organization if REPRO_DOCKER_ORG undefined
-ifndef REPRO_DOCKER_ORG
-REPRO_DOCKER_ORG=$(shell whoami)
-$(warning The REPRO_DOCKER_ORG variable is not set. Defaulting to \
-          user name '${REPRO_DOCKER_ORG}' for name of Docker organization.)
-endif
-
-# use 'latest' as image tag if REPRO_IMAGE_TAG undefined
-ifndef REPRO_IMAGE_TAG
-REPRO_IMAGE_TAG=latest
-$(warning The REPRO_IMAGE_TAG variable is not set. Defaulting to \
-          '${REPRO_IMAGE_TAG}' for Docker image tag.)
-endif
-
-# identify the Docker image associated with this REPRO
-REPRO_IMAGE=${REPRO_DOCKER_ORG}/${REPRO_NAME}:${REPRO_IMAGE_TAG}
 
 ifndef IN_RUNNING_REPRO
 
 ## 
 
 #- =============================================================================
-##     --- Targets affected by settings in file repro-image-config ---
+##     --- Targets affected by REPRO IMAGE settings ---
 #- =============================================================================
 
 ## 
@@ -111,26 +138,26 @@ endif # ifdef PARENT_IMAGE
 
 endif # ifndef IN_RUNNING_REPRO
 
-ifneq ($(REPRO_VERBOSE_MAKEFILE), true)
+ifeq ($(REPRO_VERBOSITY), debug)
+QUIET=
+else ifeq ($(REPRO_VERBOSITY), trace)
+QUIET=
+else 
 QUIET=@
 endif
 
 ## 
 #- =============================================================================
-##    --- Targets also affected by settings in file repro-run-config ---
+##    --- Targets also affected by REPRO RUN settings ---
 #- =============================================================================
-
-# include REPRO run-time configuration file if present 
--include repro-run-config
 
 # define mount point for REPRO directory tree in running container
 REPRO_MNT=/mnt/${REPRO_NAME}
 
 # define command for running the REPRO Docker image
 REPRO_RUN_COMMAND=$(QUIET)docker run -it --rm $(REPRO_DOCKER_OPTIONS)       \
-                             -e REPRO_NAME="${REPRO_NAME}"                  \
-                             -e REPRO_MNT="${REPRO_MNT}"                    \
                              --volume "$(CURDIR)":"$(REPRO_MNT)"            \
+							 $(REPRO_SETTINGS)								\
                              $(REPRO_MOUNT_OTHER_VOLUMES)                   \
                              $(REPRO_IMAGE)
 
@@ -203,11 +230,8 @@ purge-databases:        ## Delete all artifacts associated with database instanc
 
 ## 
 #- =============================================================================
-##    --- Targets further affected by settings in file repro-code-config ---
+##    --- Targets further affected by REPRO CODE settings ---
 #- =============================================================================
-
-# include REPRO run-time configuration file if present 
--include repro-code-config
 
 ## 
 #- ---------- Targets for building and testing custom code in this REPRO -------
