@@ -17,26 +17,35 @@ default_target: list
 #- =============================================================================
 
 #- 
-#- --- REPRO_SERVICES ---------------------------------------------------------
+#- --- REPRO_SERVICES_STARTUP --------------------------------------------------
 #- 
 #-    auto : Services start automatically when the REPRO starts (DEFAULT).
 #-  manual : Services start when the start-services target is invoked manually.
 #
-REPRO_SERVICES ?= auto
+REPRO_SERVICES_STARTUP ?= auto
 
 #- 
-#- --- REPRO_VERBOSITY --------------------------------------------------------
+#- --- REPRO_LOGGING_LEVEL -----------------------------------------------------
 #- 
-#-  silent : The REPRO framework will make no output at all.
-#-   quiet : Only errors and essential messages will be shown (DEFAULT).
-#-    warn : Errors and warning messages will be shown.
-#-    info : Errors, warnings, and informational messages will be shown.
-#-   debug : All messages will be shown along with script and basic Makefile
-#-           execution information.
-#-   trace : All possible output including detailed Makefile target execution
-#-           information.
+#-    none : The REPRO framework will perform no logging.
+#-   alert : Only alerts and error messages will be logged.
+#-    warn : Alerts, errors and warning messages will be logged (DEFAULT).
+#-    info : Alerts, errors, warnings and informational messages will be logged.
+#-   debug : Detailed messages will be included in log output along with script 
+#-           and Makefile target invocation records.
+#-   trace : REPRO will additionally log tracepoints placed at function entry
+#-           and return points, etc.
 #
-REPRO_VERBOSITY ?= quiet
+REPRO_LOGGING_LEVEL ?= warn
+
+#- 
+#- --- REPRO_LOGGING_OPTIONS ---------------------------------------------------
+#- 
+#-  NO_TIMESTAMPS : Messages will not be prepended by timestamps.
+#-  NO_LOCATIONS  : Source file locations will not be included in trace messages.
+#
+REPRO_LOGGING_OPTIONS ?= 
+
 
 # Use working directory as name of REPRO if REPRO_NAME undefined.
 ifndef REPRO_NAME
@@ -60,9 +69,10 @@ $(warning The REPRO_IMAGE_TAG variable is not set. Defaulting to \
 endif
 
 # Assemble REPRO settings available within the running REPRO.
-REPRO_SETTINGS=	-e REPRO_SERVICES="$(REPRO_SERVICES)"	\
-				-e REPRO_VERBOSITY="$(REPRO_VERBOSITY)"	\
-               	-e REPRO_NAME="${REPRO_NAME}"                  			\
+REPRO_SETTINGS=	-e REPRO_SERVICES_STARTUP="$(REPRO_SERVICES_STARTUP)" \
+				-e REPRO_LOGGING_LEVEL="$(REPRO_LOGGING_LEVEL)"     \
+				-e REPRO_LOGGING_OPTIONS="$(REPRO_LOGGING_OPTIONS)"	\
+               	-e REPRO_NAME="${REPRO_NAME}"                       \
                	-e REPRO_MNT="${REPRO_MNT}"
 
 # Identify the Docker image associated with this REPRO
@@ -138,9 +148,9 @@ endif # ifdef PARENT_IMAGE
 
 endif # ifndef IN_RUNNING_REPRO
 
-ifeq ($(REPRO_VERBOSITY), debug)
+ifeq ($(REPRO_LOGGING_LEVEL), debug)
 QUIET=
-else ifeq ($(REPRO_VERBOSITY), trace)
+else ifeq ($(REPRO_LOGGING_LEVEL), trace)
 QUIET=
 else 
 QUIET=@
