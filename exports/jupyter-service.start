@@ -2,7 +2,7 @@
 
 jupyter_mode=${1:-lab}
 
-state_dir=$(repro.module_dot_dir jupyter-service)
+state_dir=$(repro.trim_dir_name_for_module jupyter-service)
 
 jupyter ${jupyter_mode} --ip 0.0.0.0 --no-browser --NotebookApp.token='' \
     --notebook-dir=${REPRO_MNT}                                   \

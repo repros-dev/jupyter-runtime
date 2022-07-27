@@ -39,13 +39,29 @@ REPRO_SERVICES_STARTUP ?= auto
 REPRO_LOGGING_LEVEL ?= warn
 
 #- 
+#- --- REPRO_LOGGING_FILENAME --------------------------------------------------
+#- 
+#-    auto : Name log unqiuely using current time: [timestamp].log (DEFAULT)
+#-  [name] : Use variable value to name the log file: [name]
+# 
+REPRO_LOGGING_FILENAME ?= auto
+
+#- 
 #- --- REPRO_LOGGING_OPTIONS ---------------------------------------------------
 #- 
 #-  NO_TIMESTAMPS : Messages will not be prepended by timestamps.
 #-  NO_LOCATIONS  : Source file locations will not be included in trace messages.
+#-  NO_APPEND     : Overwrite log file rather than appending to it.
 #
 REPRO_LOGGING_OPTIONS ?= 
 
+#- 
+#- --- REPRO_EXIT_AFTER_STARTUP ------------------------------------------------
+#- 
+#-  false : REPRO session will not exit automatically (DEFAULT).
+#-  true  : REPRO session will automatically exit after REPRO startup completes.
+#
+REPRO_EXIT_AFTER_STARTUP ?= false
 
 # Use working directory as name of REPRO if REPRO_NAME undefined.
 ifndef REPRO_NAME
@@ -69,10 +85,12 @@ $(warning The REPRO_IMAGE_TAG variable is not set. Defaulting to \
 endif
 
 # Assemble REPRO settings available within the running REPRO.
-REPRO_SETTINGS=	-e REPRO_SERVICES_STARTUP="$(REPRO_SERVICES_STARTUP)" \
-				-e REPRO_LOGGING_LEVEL="$(REPRO_LOGGING_LEVEL)"     \
-				-e REPRO_LOGGING_OPTIONS="$(REPRO_LOGGING_OPTIONS)"	\
-               	-e REPRO_NAME="${REPRO_NAME}"                       \
+REPRO_SETTINGS=	-e REPRO_SERVICES_STARTUP="$(REPRO_SERVICES_STARTUP)" 		\
+				-e REPRO_LOGGING_LEVEL="$(REPRO_LOGGING_LEVEL)"     		\
+				-e REPRO_LOGGING_FILENAME="$(REPRO_LOGGING_FILENAME)"		\
+ 				-e REPRO_LOGGING_OPTIONS="$(REPRO_LOGGING_OPTIONS)"			\
+				-e REPRO_EXIT_AFTER_STARTUP="$(REPRO_EXIT_AFTER_STARTUP)"	\
+               	-e REPRO_NAME="${REPRO_NAME}"                       		\
                	-e REPRO_MNT="${REPRO_MNT}"
 
 # Identify the Docker image associated with this REPRO
@@ -190,6 +208,9 @@ start-repro:
 	$(warning INFO: The REPRO is already running.)
 endif
 
+clean-repro:            ## Delete REPRO run logs in .repro-log directory.
+	rm .repro-log/*.log
+
 ## 
 ifdef IN_RUNNING_REPRO
 start-services:         ## Start the services provided by this REPRO.
@@ -198,6 +219,10 @@ else
 start-services:
 	$(RUN_IN_REPRO) 'repro.start_services --wait-for-key'
 endif
+
+REPRO_TESTS_FILE=repro-tests
+test-repro:
+	@make -f Makefile-tests --quiet
 
 ## 
 #- ---------- Targets for running the examples in this REPRO --------------------

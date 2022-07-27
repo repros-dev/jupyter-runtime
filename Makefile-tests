@@ -1,0 +1,47 @@
+
+
+TESTS = start-repro-auto-services 		\
+		start-repro-manual-services		\
+		start-services-auto-services 	\
+		start-services-manual-services 	\
+		run-demos						\
+		clean-demos						\
+
+test-all: clean $(TESTS)
+
+clean: $(addsuffix .clean, $(TESTS))
+
+%.clean:
+	rm -f .repro-log/test-$(basename $@).log
+
+export REPRO_EXIT_AFTER_STARTUP=true
+export REPRO_LOGGING_LEVEL=debug
+export REPRO_LOGGING_OPTIONS=NO_APPEND NO_TIMESTAMPS
+
+start-repro-auto-services:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	REPRO_SERVICES_STARTUP=auto			\
+	make start-repro
+
+start-repro-manual-services:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	REPRO_SERVICES_STARTUP=manual		\
+	make start-repro
+
+start-services-auto-services:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	REPRO_SERVICES_STARTUP=auto			\
+	make start-services
+
+start-services-manual-services:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	REPRO_SERVICES_STARTUP=manual		\
+	make start-services
+
+run-demos:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	make run-demos
+
+clean-demos:
+	@REPRO_LOGGING_FILENAME=test-$@.log	\
+	make clean-demos
