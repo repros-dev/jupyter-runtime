@@ -56,12 +56,12 @@ REPRO_LOGGING_FILENAME ?= auto
 REPRO_LOGGING_OPTIONS ?= 
 
 #- 
-#- --- REPRO_EXIT_AFTER_STARTUP ------------------------------------------------
+#- --- REPRO_INTERACTIVE_SESSION -----------------------------------------------
 #- 
-#-  false : REPRO session will not exit automatically (DEFAULT).
-#-  true  : REPRO session will automatically exit after REPRO startup completes.
+#-   true : Session is interactive (DEFAULT).
+#-  false : Session is non-interactive. Prompts for input will use defaults.
 #
-REPRO_EXIT_AFTER_STARTUP ?= false
+REPRO_INTERACTIVE_SESSION ?= true
 
 # Use working directory as name of REPRO if REPRO_NAME undefined.
 ifndef REPRO_NAME
@@ -89,7 +89,7 @@ REPRO_SETTINGS=	-e REPRO_SERVICES_STARTUP="$(REPRO_SERVICES_STARTUP)" 		\
 				-e REPRO_LOGGING_LEVEL="$(REPRO_LOGGING_LEVEL)"     		\
 				-e REPRO_LOGGING_FILENAME="$(REPRO_LOGGING_FILENAME)"		\
  				-e REPRO_LOGGING_OPTIONS="$(REPRO_LOGGING_OPTIONS)"			\
-				-e REPRO_EXIT_AFTER_STARTUP="$(REPRO_EXIT_AFTER_STARTUP)"	\
+				-e REPRO_INTERACTIVE_SESSION="$(REPRO_INTERACTIVE_SESSION)"	\
                	-e REPRO_NAME="${REPRO_NAME}"                       		\
                	-e REPRO_MNT="${REPRO_MNT}"
 
@@ -200,16 +200,22 @@ endif
 ## 
 #- ---------- Targets for starting this REPRO  ---------------------------------
 #- 
+
 ifndef IN_RUNNING_REPRO
+ifeq ($(REPRO_EXIT_AFTER_STARTUP), true)
 start-repro:            ## Start this REPRO in interactive mode. 
+	$(RUN_IN_REPRO) exit
+else
+start-repro: 
 	$(REPRO_RUN_COMMAND)
+endif
 else
 start-repro:
 	$(warning INFO: The REPRO is already running.)
 endif
 
 clean-repro:            ## Delete REPRO run logs in .repro-log directory.
-	rm .repro-log/*.log
+	rm -f .repro-log/*.log
 
 ## 
 ifdef IN_RUNNING_REPRO

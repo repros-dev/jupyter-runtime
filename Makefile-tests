@@ -1,47 +1,60 @@
 
+# default is to clean up then rerun all the tests
+default_target: all
 
-TESTS = start-repro-auto-services 		\
-		start-repro-manual-services		\
-		start-services-auto-services 	\
-		start-services-manual-services 	\
-		run-demos						\
-		clean-demos						\
+# macros for setting the logging level during a test
+ALERT = REPRO_LOGGING_LEVEL=alert
+WARN  = REPRO_LOGGING_LEVEL=warn
+INFO  = REPRO_LOGGING_LEVEL=info
+DEBUG = REPRO_LOGGING_LEVEL=debug
+TRACE = REPRO_LOGGING_LEVEL=trace
 
-test-all: clean $(TESTS)
+# macros for controlling when services start
+AUTO   = REPRO_SERVICES_STARTUP=auto
+MANUAL = REPRO_SERVICES_STARTUP=manual
 
-clean: $(addsuffix .clean, $(TESTS))
+# macro for automatically naming the log file for a test
+LOG = .repro-log/$(basename $@).log
 
-%.clean:
-	rm -f .repro-log/test-$(basename $@).log
-
+# settings for all tests
 export REPRO_EXIT_AFTER_STARTUP=true
-export REPRO_LOGGING_LEVEL=debug
-export REPRO_LOGGING_OPTIONS=NO_APPEND NO_TIMESTAMPS
+export REPRO_INTERACTIVE_SESSION=false
+export REPRO_LOGGING_OPTIONS=NO_APPEND NO_TIMESTAMPS NO_FILE
 
-start-repro-auto-services:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	REPRO_SERVICES_STARTUP=auto			\
-	make start-repro
+# names of all tests to be run automatically
+TESTS = start-repro-auto 		\
+		start-repro-manual		\
+		start-services-auto		\
+		start-services-manual 	\
+		run-demos				\
+		clean-demos
 
-start-repro-manual-services:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	REPRO_SERVICES_STARTUP=manual		\
-	make start-repro
+# generic targets for running the tests 
+all: clean-all test-all
+test-all: clean-all $(addsuffix .test, $(TESTS))
+clean-all: $(addsuffix .clean, $(TESTS))
 
-start-services-auto-services:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	REPRO_SERVICES_STARTUP=auto			\
-	make start-services
+# rule for deleting the products of a particular test
+%.clean:
+	rm -f ${LOG}
 
-start-services-manual-services:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	REPRO_SERVICES_STARTUP=manual		\
-	make start-services
+# the test targets
 
-run-demos:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	make run-demos
+start-repro-auto.test:
+	$(DEBUG) $(AUTO) make start-repro > $(LOG)
 
-clean-demos:
-	@REPRO_LOGGING_FILENAME=test-$@.log	\
-	make clean-demos
+start-repro-manual.test:
+	$(DEBUG) $(MANUAL) make start-repro > $(LOG)
+
+start-services-auto.test:
+	$(DEBUG) $(AUTO) make start-services > $(LOG)
+
+start-services-manual.test:
+	$(DEBUG) $(MANUAL) make start-services > $(LOG)
+
+run-demos.test:
+	$(DEBUG) make run-demos > $(LOG)
+
+clean-demos.test:
+	$(DEBUG) $(AUTO) make clean-demos > $(LOG)
+
