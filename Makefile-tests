@@ -3,6 +3,7 @@
 default_target: all
 
 # macros for setting the logging level during a test
+NONE  = REPRO_LOGGING_LEVEL=none
 ALERT = REPRO_LOGGING_LEVEL=alert
 WARN  = REPRO_LOGGING_LEVEL=warn
 INFO  = REPRO_LOGGING_LEVEL=info
@@ -19,7 +20,8 @@ LOG = .repro-log/$(basename $@).log
 # settings for all tests
 export REPRO_EXIT_AFTER_STARTUP=true
 export REPRO_INTERACTIVE_SESSION=false
-export REPRO_LOGGING_OPTIONS=NO_APPEND NO_TIMESTAMPS NO_FILE
+export REPRO_LOGGING_LEVEL=info
+export REPRO_LOGGING_OPTIONS=NO_APPEND NO_TIMESTAMPS NO_FILE NO_LOCATIONS
 
 # names of all tests to be run automatically
 TESTS = start-repro-auto 		\
@@ -27,6 +29,7 @@ TESTS = start-repro-auto 		\
 		start-services-auto		\
 		start-services-manual 	\
 		run-demos				\
+		run-demos-no-logging	\
 		clean-demos
 
 # generic targets for running the tests 
@@ -41,20 +44,23 @@ clean-all: $(addsuffix .clean, $(TESTS))
 # the test targets
 
 start-repro-auto.test:
-	$(DEBUG) $(AUTO) make start-repro > $(LOG)
+	$(AUTO) make start-repro > $(LOG)
 
 start-repro-manual.test:
-	$(DEBUG) $(MANUAL) make start-repro > $(LOG)
+	$(MANUAL) make start-repro > $(LOG)
 
 start-services-auto.test:
-	$(DEBUG) $(AUTO) make start-services > $(LOG)
+	$(AUTO) make start-services > $(LOG)
 
 start-services-manual.test:
-	$(DEBUG) $(MANUAL) make start-services > $(LOG)
+	$(MANUAL) make start-services > $(LOG)
 
 run-demos.test:
-	$(DEBUG) make run-demos > $(LOG)
+	$(AUTO) make run-demos > $(LOG)
 
 clean-demos.test:
-	$(DEBUG) $(AUTO) make clean-demos > $(LOG)
+	$(AUTO) make clean-demos > $(LOG)
+
+run-demos-no-logging.test:
+	$(NONE) make run-demos > $(LOG)
 
