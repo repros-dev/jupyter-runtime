@@ -173,12 +173,14 @@ endif
 SESSION_DIR=.repro-sessions/active
 ENV_FILE=${SESSION_DIR}/session.env
 
-PHONY: session logs
+PHONY: session repro-logs
 
-logs:
+repro-logs:
+ifndef IN_RUNNING_REPRO
 	$(shell mkdir -p ${REPRO_LOGGING_DIRNAME})
+endif
 
-session: logs
+session: repro-logs
 ifndef IN_RUNNING_REPRO
 	$(shell mkdir -p ${SESSION_DIR})
 	$(file  > ${ENV_FILE}, REPRO_NAME=$(REPRO_NAME))
@@ -241,22 +243,27 @@ reset-repro: session
 	$(file >> ${ENV_FILE}, REPRO_DEFER_INIT=true)
 	$(RUN_IN_REPRO) repro.reset_repro
 
+TARGET_NOT_SUPPORTED_IN_RUNNING_REPRO = $(error The $@ target is not supported in a running REPRO)
+
 REPRO_TESTS_FILE=repro-tests
-## test-repro:        Perform regression tests on this REPRO.
-test-repro: logs 
+## test-repro:        Run automated regression tests on this REPRO.
+test-repro: repro-logs 
+ifndef IN_RUNNING_REPRO
 	@make -f Makefile-tests --quiet
+else
+	$(TARGET_NOT_SUPPORTED_IN_RUNNING_REPRO)
+endif
 
 clean-repro:       ## Delete logs in REPRO logs directory.
 	make -f Makefile-tests clean-all
 	rm -f $(REPRO_LOGGING_DIRNAME)/*.log
 
 ## 
-ifdef IN_RUNNING_REPRO
 ## start-services:    Start the services provided by this REPRO.
-start-services:  session       
+start-services: session
+ifdef IN_RUNNING_REPRO
 	$(RUN_IN_REPRO) 'repro.start_services'
 else
-start-services: session
 	$(RUN_IN_REPRO) 'repro.start_services --wait-for-key'
 endif
 
