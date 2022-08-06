@@ -1,0 +1,4 @@
+make: Entering directory '/mnt/jupyter-service/.jupyter-service'
+bash jupyter-service.start
+make: Leaving directory '/mnt/jupyter-service/.jupyter-service'
+logout

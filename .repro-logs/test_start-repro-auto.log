@@ -1,0 +1,40 @@
+I MESG Initialized REPRO logging system and macros
+D MESG Already loaded logging functions
+I MESG Initializing REPRO session
+I MESG Building PATH variable
+I MESG Initializing modules
+D MESG Iterating over the list of installed modules in the module order file (/home/repro/.repro-order)
+I MESG Initializing module 'repro'
+I MESG Initializing trim files for module 'repro'
+D MESG Looking for Makefiles in the 'repro' module installation directory (/home/repro/repro-modules/repro-master) to copy to the module trim directory (/mnt/jupyter-service/.repro)
+I MESG Done initializing trim files for module 'repro'
+I MESG Initializing module 'jupyter-service'
+I MESG Initializing trim files for module 'jupyter-service'
+D MESG Looking for Makefiles in the 'jupyter-service' module installation directory (/home/repro/repro-modules/jupyter-service-exports) to copy to the module trim directory (/mnt/jupyter-service/.jupyter-service)
+D MESG The file Makefile-base is already present in the 'jupyter-service' trim directory (/mnt/jupyter-service/.jupyter-service)
+I MESG Done initializing trim files for module 'jupyter-service'
+I MESG Initializing module 'python-dev'
+I MESG Initializing trim files for module 'python-dev'
+D MESG Looking for Makefiles in the 'python-dev' module installation directory (/home/repro/repro-modules/python-dev-master) to copy to the module trim directory (/mnt/jupyter-service/.python-dev)
+I MESG Done initializing trim files for module 'python-dev'
+I MESG Done initializing modules
+I MESG Ensuring that the REPRO target mapping file exists (/mnt/jupyter-service/.repro/repro-targets)
+D MESG The REPRO target mapping file (/mnt/jupyter-service/.repro/repro-targets) already exists so nothing to do.
+D MESG Triggering automatic service startup if enabled
+D MESG The function repro.start_services is being called during startup
+I MESG Starting services now because REPRO_SERVICES_STARTUP set to 'auto'
+D EVAL repro.run_target start-services --enable-error-codes
+I MESG Invoking implementations of REPRO target 'start-services'
+D MESG Looking for implementations of the 'start-services' target in the REPRO mapping file (/mnt/jupyter-service/.repro/repro-targets)
+D MESG Processing line in target file: 'start-services: jupyter-service.base.start'
+I MESG Invoking the 'start' target of the 'jupyter-service' module ('base' profile)
+D EVAL make -C /mnt/jupyter-service/.jupyter-service -f Makefile-base start
+D MESG Announcing services declared in (/home/repro/.repro-services)
+D MESG Announcing each service listed in (/home/repro/.repro-services)
+I MESG The Jupyter service is now running.
+A MESG Connect to Jupyter at http://localhost:8888.
+I MESG Done announcing services
+I MESG Done invoking implementations of the 'start-services' REPRO target
+D MESG Done handling repro.start_services call during startup
+I MESG Done initializing REPRO state
+D MESG Ending REPRO session
