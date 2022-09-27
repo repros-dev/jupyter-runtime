@@ -1,7 +1,7 @@
 FROM cirss/jupyter-service-parent:latest
 
-ADD ${REPRO_DIST}/setup /repro/dist/
-RUN bash /repro/dist/setup
+ADD ${REPRO_DIST}/boot-setup /repro/dist/
+RUN bash /repro/dist/boot-setup
 
 COPY exports /repro/exports
 

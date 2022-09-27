@@ -11,5 +11,13 @@ I MESG Initializing trim files for module 'jupyter-service'
 I MESG Initializing module 'python-dev'
 I MESG Initializing trim files for module 'python-dev'
 I MESG Ensuring that the REPRO target mapping file exists (/mnt/jupyter-service/.repro/repro-targets)
-I MESG Services not being started during session initialization because REPRO_SERVICES_STARTUP is not set to 'auto'
+I MESG Starting services during session initialization because REPRO_SERVICES_STARTUP set to 'auto'
+I MESG Invoking implementations of REPRO target 'start-services'
+I MESG Invoking the 'jupyter-service:base:start' target
+I MESG Loaded repro logging functions
+I MESG Loaded repro base functions
+I MESG The Jupyter service is now running.
+A MESG Connect to Jupyter at http://localhost:8888.
 I MESG Done initializing REPRO session
+I MESG Invoking implementations of REPRO target 'run-demo'
+I MESG No implementations of the 'run-demo' REPRO target were found

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ${REPRO_BASE_FUNCTIONS}
+
 jupyter_mode=${1:-lab}
 
 state_dir=$(repro.trim_dir_name_for_module jupyter-service)

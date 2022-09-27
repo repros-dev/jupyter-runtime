@@ -1,34 +1,18 @@
-I MESG Initialized REPRO logging system and macros
-D MESG Already loaded logging functions
+I MESG Loaded repro logging functions
+I MESG Initialized repro logging system
+I MESG Loaded repro base functions
 I MESG Initializing REPRO session
 I MESG Building PATH variable
 I MESG Skipping rest of session initialization because REPRO_DEFER_INIT is set to 'true'
 I MESG Resetting REPRO
 I MESG Resetting all modules
-D MESG Iterating over the list of installed modules in the module order file (/home/repro/.repro-order)
 I MESG Resetting the 'repro' module
-D EVAL repro.initialize_module_trim repro --reset
 I MESG Re-initializing trim files for module 'repro'
-D MESG Looking for Makefiles in the 'repro' module installation directory (/home/repro/repro-modules/repro-master) to copy to the module trim directory (/mnt/jupyter-service/.repro)
-I MESG Done initializing trim files for module 'repro'
 I MESG Resetting the 'jupyter-service' module
-D EVAL repro.initialize_module_trim jupyter-service --reset
 I MESG Re-initializing trim files for module 'jupyter-service'
-D MESG Looking for Makefiles in the 'jupyter-service' module installation directory (/home/repro/repro-modules/jupyter-service-exports) to copy to the module trim directory (/mnt/jupyter-service/.jupyter-service)
-I MESG Copying /home/repro/repro-modules/jupyter-service-exports/Makefile-base to the 'jupyter-service' trim directory (/mnt/jupyter-service/.jupyter-service)
-I MESG Done initializing trim files for module 'jupyter-service'
+I MESG Copying /home/repro/repro-modules/jupyter-service-exports/base-makefile to the 'jupyter-service' trim directory (/mnt/jupyter-service/.jupyter-service)
 I MESG Resetting the 'python-dev' module
-D EVAL repro.initialize_module_trim python-dev --reset
 I MESG Re-initializing trim files for module 'python-dev'
-D MESG Looking for Makefiles in the 'python-dev' module installation directory (/home/repro/repro-modules/python-dev-master) to copy to the module trim directory (/mnt/jupyter-service/.python-dev)
-I MESG Done initializing trim files for module 'python-dev'
-D MESG Done resetting all modules
 I MESG Resetting the REPRO target mapping file (/mnt/jupyter-service/.repro/repro-targets)
 I MESG Installing a default (empty) target mapping file to /mnt/jupyter-service/.repro/repro-targets
-D MESG Iterating over the list of installed modules in the module order file (/home/repro/.repro-order)
-D MESG Looking for targets in the 'repro' module
-D MESG Looking for targets in the 'jupyter-service' module
-I MESG Mapping the 'start' target in the 'base' profile of the 'jupyter-service' module to the REPRO 'start-services' target
-D MESG Looking for targets in the 'python-dev' module
-I MESG Done building the REPRO target mapping file
-D MESG Done resetting REPRO
+I MESG Mapping the 'jupyter-service:base:start' target to the REPRO 'start-services' target
